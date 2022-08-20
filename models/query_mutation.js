@@ -5,6 +5,7 @@ const following_model = require('./following_models');
 const product_model = require('./products_models');
 const selling_model = require('./selling_models');
 const sell_product_model = require('./sell_product_models')
+const category_model=require('./category_models');
 
 const{ GraphQLObjectType,
         GraphQLID,
@@ -12,6 +13,22 @@ const{ GraphQLObjectType,
         GraphQLSchema,
         GraphQLInt, GraphQLList, GraphQLFloat } = graphql;
 
+const category=new GraphQLObjectType({
+    name: 'category_model',
+    fields:()=>({
+        _id: { type: GraphQLID },
+        categoryname: { type: GraphQLString },
+        category_topid: { type: GraphQLString },
+        keys: { type: GraphQLString },
+        categorylevel: { type: GraphQLInt },
+        category_product:{
+            type: new GraphQLList(product),
+            resolve(parent,args){
+                return product_model.find({category_id:parent._id})
+            }
+        }
+    }),
+})
 const product = new GraphQLObjectType({
     name: "product_model",
     fields: () => ({
@@ -23,6 +40,13 @@ const product = new GraphQLObjectType({
         image: { type: GraphQLString },
         category_id: { type: GraphQLString },
         status: { type: GraphQLInt },
+        category_name: {
+            type:new GraphQLList(category),
+            resolve(parent, args) {
+                return category_model.find({ _id: parent.category_id })
+
+            }
+        }
     })
 });
 
@@ -82,6 +106,24 @@ const sell_product = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: "Mutation",
     fields: {
+        categoryM:{
+            type: category,
+            args:{
+                categoryname: { type: GraphQLString },
+                category_topid: { type: GraphQLString },
+                keys: { type: GraphQLString },
+                categorylevel: { type: GraphQLInt },
+            },
+            resolve(parent,args){
+                let newcategory = new category_model({
+                    categoryname: args.categoryname,
+                    category_topid: args.category_topid,
+                    keys: args.keys,
+                    categorylevel: args.categorylevel,
+                });
+                return newcategory.save();
+            }
+        },
         productsM: {
             type: product,
             args: {
