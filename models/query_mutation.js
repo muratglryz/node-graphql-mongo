@@ -106,7 +106,7 @@ const sell_product = new GraphQLObjectType({
 const Mutation = new GraphQLObjectType({
     name: "Mutation",
     fields: {
-        categoryM:{
+        addcategoryM:{
             type: category,
             args:{
                 categoryname: { type: GraphQLString },
@@ -124,7 +124,17 @@ const Mutation = new GraphQLObjectType({
                 return newcategory.save();
             }
         },
-        productsM: {
+        removecategoryM:{
+            type: category,
+            args:{
+                _id: { type: GraphQLID },
+            },
+            resolve(parent,args){
+                let deleted = category_model.findById(args._id);
+                return deleted.deleteOne();
+            }
+        },
+        addproductsM: {
             type: product,
             args: {
                 name: { type: GraphQLString },
@@ -150,7 +160,7 @@ const Mutation = new GraphQLObjectType({
             return newProduct.save();
             }
         },
-        customersM: {
+        addcustomersM: {
             type: customer,
             args: {
                 username: { type: GraphQLString },
@@ -176,7 +186,7 @@ const Mutation = new GraphQLObjectType({
             return newCustomer.save();
             }
         },
-        basketM:{
+        addbasketM:{
             type: basket,
             args:{
                 user_id:{type:GraphQLString},
@@ -192,7 +202,17 @@ const Mutation = new GraphQLObjectType({
                 return newBasket.save();
             }
         },
-        followingM:{
+        removebasketM:{
+            type: basket,
+            args:{
+                _id: { type: GraphQLID },
+            },
+            resolve(parent,args){
+                let deleted = basket_model.findById(args._id);
+                return deleted.deleteOne();
+            }
+        },
+        addfollowingM:{
             type: following,
             args:{
                 user_id:{type:GraphQLString},
@@ -206,7 +226,17 @@ const Mutation = new GraphQLObjectType({
                 return newfollow.save();
             }
         },
-        sellingM:{
+        removefollowingM:{
+            type: following,
+            args:{
+                _id: { type: GraphQLID },
+            },
+            resolve(parent,args){
+                let deleted = following_model.findById(args._id);
+                return deleted.deleteOne();
+            }
+        },
+        addsellingM:{
             type: selling,
             args:{
                 user_id: { type: GraphQLString },
@@ -228,7 +258,7 @@ const Mutation = new GraphQLObjectType({
                 return newselling.save();
             }
         },
-        sell_productM:{
+        addsell_productM:{
             type: sell_product,
             args:{
                 sell_id:{type:GraphQLString},
@@ -266,4 +296,3 @@ module.exports =new GraphQLSchema({
     query: RootQuery,
     mutation: Mutation,
 })
-
