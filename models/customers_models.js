@@ -5,13 +5,13 @@ const schema = mongoose.Schema;
 
 
 const customers = new schema({
-    username:String,
+    username:{type:String, unique: true},
     password:String,
     first_name:String,
     last_name:String,
     address:String,
-    telephone:String,
-    mail:String,
+    telephone:{type:String, unique: true},
+    mail:{type:String, unique: true},
 },
 {
     collection: 'customers'
